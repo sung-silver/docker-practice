@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  spring-app:
+    image: docker-app-week2 # docker-app-week2 이름으로 빌드한 이미지가 존재해야 함
+    build:
+      context: . # 현재 디렉토리(.)를 컨텍스트로 설정하여 도커가 Dockerfile을 찾게함
+      dockerfile: Dockerfile
+    ports:
+      - "8080"
+    deploy: # Docker Swarm에서 작동하게 됨
+      replicas: 3 # spring-app 서비스를 3개 복제하여 배포
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - spring-app
